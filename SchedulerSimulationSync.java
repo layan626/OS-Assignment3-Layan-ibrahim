@@ -72,15 +72,25 @@ class SharedResources {
 }
     // Method to add waiting time
     public static void addWaitingTime(long time) {
-        // TODO: Protect this critical section with a lock
+     WaitingTimeLock.lock();
+        try{
         totalWaitingTime += time;
+       }finally{
+     WaitingTimeLock.unlock();
+
+       }
     }
     
     // Method to log execution
     public static void logExecution(String message) {
-        // TODO: Protect this critical section with a lock
-        // RACE CONDITION: ArrayList is not thread-safe!
-        executionLog.add(message);
+      logLock.lock();
+      try{
+        executionLog.add( message);
+      }finally{
+        logLock.unlock();
+      }
+       
+      
     }
 }
 
