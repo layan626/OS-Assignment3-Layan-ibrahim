@@ -214,50 +214,56 @@ java SchedulerSimulationSync
 All runs produced consistent behavior: same number of processes, correct context switch increments, and no corrupted output. Minor variations only came from randomness (burst times), not from synchronization issues.
 
 **Why synchronization is necessary**: 
-(Explain what race conditions COULD occur without synchronization, even if you didn't observe them. Explain which shared resources need protection and why.)
+ 
+Without locks, counters like contextSwitchCount and shared lists like executionLog could produce lost updates, inconsistent values, or corrupted logs due to race conditions.
 
 **Conclusion**: 
-
+Synchronization ensured stable and predictable results across repeated executions.
 ---
 
 ### Test 2: Exception Testing
 **What I tested**: Checking for ConcurrentModificationException
 
 **Testing procedure**: 
+Ran the program under heavy load and observed log updates during multiple thread executions.
 
 **Results**: 
-
+No exceptions occurred because logLock ensures only one thread modifies the list at a time.
 **What this proves**: 
-
+The logging mechanism is thread‑safe and properly synchronized.
 ---
 
 ### Test 3: Correctness Verification
-**What I tested**: Verifying correct final values (total burst time, context switches, etc.)
+**What I tested**: Verified final statistics such as total context switches, completed processes, and waiting times.
 
 **Expected values**: 
 
+Completed processes = number of created processes
+
+Context switches = increments equal to number of quantum executions
+
+Waiting time = (completionTime - creationTime) - burstTime
 **Actual values**: 
-
+All final printed values matched expected behavior and were logically consistent.
 **Analysis**: 
-
+Correct synchronization ensured accurate counters and prevented lost updates.
 ---
 
 ### Test 4: Different Scenarios
-**Scenario tested**: [e.g., different time quantum, more processes, etc.]
+**Scenario tested**: Changed time quantum and increased number of processes
 
 **Purpose**: 
-
+To verify that synchronization still works under different scheduling loads.
 **Results**: 
-
+Program behaved correctly: no deadlocks, no overlapping output, and all processes completed.
 **What I learned**: 
-
+The locking design scales well and maintains correctness even with higher concurrency.
 ---
 
 ## Part 5: Reflection and Learning
 
 ### What I learned about synchronization:
-
-[6-8 sentences about key concepts, challenges, insights]
+I learned that synchronization is essential when multiple threads access shared data at the same time. Without proper locking, race conditions can easily corrupt counters, logs, and timing values. I also learned how different mechanisms—like ReentrantLocks and Semaphores—solve different types of concurrency problems. Implementing try‑finally blocks taught me the importance of always releasing locks to avoid deadlocks. I gained a better understanding of fine‑grained vs. coarse‑grained locking and how design choices affect performance. Overall, synchronization requires careful planning, especially when multiple threads interact with shared resources.
 
 ---
 
@@ -266,44 +272,42 @@ All runs produced consistent behavior: same number of processes, correct context
 Give TWO examples where synchronization is critical:
 
 **Example 1**: 
-
+Banking systems where multiple transactions update the same account balance.
 **Example 2**: 
-
+Operating systems managing CPU scheduling, where multiple processes compete for limited hardware resources.
 ---
 
 ### How I would explain synchronization to others:
-
-[Explain to someone who just finished Assignment 1 - use simple terms and analogies]
-
+Synchronization is like having one person at a time use a shared tool so no one breaks it or causes mistakes. If two people try to write on the same paper at once, the result becomes messy—threads behave the same way. Locks act like “please wait your turn,” and semaphores act like “only a limited number of people can enter.” It ensures that shared data stays correct even when many threads run at the same time.
 ---
 
 ## Part 6: GitHub Repository Information
 
 **Repository URL**: 
-
+https://github.com/layan626/OS-Assignment3-Layan-ibrahim.git
 **Number of commits**: 
-
+commits 15
 **Commit messages**: 
-1. 
-2. 
-3. 
-4. 
+1. Add shared resources and synchronization locks
+2. Implement process execution with CPU semaphore
+3. Add final statistics and waiting time calculation
+4. Improve error handling with try/catch/finally
 
 ---
 
 ## Summary
 
 **Total time spent on assignment**: 
-
+Approximately 5–6 hours
 **Key takeaways**: 
-1. 
-2. 
-3. 
+1. Synchronization is essential to prevent race conditions
+2. Locks and semaphores solve different concurrency problems
+3. Fine‑grained locking improves performance when resources are independent.
 
 **Most challenging aspect**: 
-
+Ensuring correct waiting time calculation and preventing output overlap between threads.
 **What I'm most proud of**: 
-
+Building a fully synchronized CPU scheduler that runs smoothly without race conditions or exceptions.
 ---
 
 **End of Documentation**
